@@ -18,8 +18,7 @@ public final class GeomFactory {
 	 * @return   The new plane
 	 */
 	public static Primitive createPlane(final Point a, final Point b, final Point c) {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		return new Plane(a, b, c);
 	}
 
 	/**
@@ -31,8 +30,7 @@ public final class GeomFactory {
 	 * @return      The new plane
 	 */
 	public static Primitive createPlane(final Vec3 n, final Point supp) {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		return new Plane(n, supp);
 	}
 
 	/**
@@ -43,8 +41,7 @@ public final class GeomFactory {
 	 * @return   The new sphere
 	 */
 	public static Primitive createSphere(final Point m, final float r) {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		return new Sphere(m, r);
 	}
 
 	/**

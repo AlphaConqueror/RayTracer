@@ -26,6 +26,7 @@ public class RaytracerPublicHitsTest extends RayTracerTestBase implements Public
 	public void setUp() {
 	}
 
+	@Test
 	public void testPlaneNoHitOrthogonal() {
 		printCurrentMethodName();
 		final Primitive plane = createPlane(new Vec3(1, 0, 0), new Point(0, 0, 0));
@@ -57,7 +58,7 @@ public class RaytracerPublicHitsTest extends RayTracerTestBase implements Public
 				new StandardObj(sphere, new SingleColor(Color.GRAY)), 0,
 				Float.MAX_VALUE);
 		assertTrue("Ray should hit sphere", hit.hits());
-		assertTrue("Hit normal should be (0,0,-1)", hit.getNormal().equals(new Vec3(0, 0, -1)));
-		assertTrue("Hit distance should be 32.0", Constants.isEqual(hit.getParameter(), 32));
+		assertTrue("Hit normal should be (0,0,-1), but got " + hit.getNormal().toString(), hit.getNormal().equals(new Vec3(0, 0, -1)));
+		assertTrue("Hit distance should be 32.0, but got " + hit.getParameter(), Constants.isEqual(hit.getParameter(), 32));
 	}
 }
