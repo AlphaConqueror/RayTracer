@@ -66,7 +66,7 @@ public class Sphere extends BBoxedPrimitive {
 
             @Override
             public Vec2 getUV() {
-                return Util.computeSphereUV(point.sub(m));
+                return Util.computeSphereUV(getPoint().sub(m));
             }
         };
     }

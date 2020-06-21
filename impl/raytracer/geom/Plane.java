@@ -61,7 +61,7 @@ public class Plane extends BBoxedPrimitive {
 
             @Override
             public Vec2 getUV() {
-                return Util.computePlaneUV(n, m, point);
+                return Util.computePlaneUV(n, m, getPoint());
             }
         };
     }
