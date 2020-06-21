@@ -3,7 +3,14 @@ package raytracer.geom;
 import raytracer.math.Point;
 import raytracer.math.Vec3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class GeomFactory {
+
+	//TODO: Edited
+	private static final List<Primitive> objects = new ArrayList<>();
+
 	private GeomFactory() {}
 
 	/**
@@ -18,7 +25,11 @@ public final class GeomFactory {
 	 * @return   The new plane
 	 */
 	public static Primitive createPlane(final Point a, final Point b, final Point c) {
-		return new Plane(a, b, c);
+		Plane plane = new Plane(a, b, c);
+
+		objects.add(plane);
+
+		return plane;
 	}
 
 	/**
@@ -30,7 +41,11 @@ public final class GeomFactory {
 	 * @return      The new plane
 	 */
 	public static Primitive createPlane(final Vec3 n, final Point supp) {
-		return new Plane(n, supp);
+		Plane plane = new Plane(n, supp);
+
+		objects.add(plane);
+
+		return plane;
 	}
 
 	/**
@@ -41,7 +56,11 @@ public final class GeomFactory {
 	 * @return   The new sphere
 	 */
 	public static Primitive createSphere(final Point m, final float r) {
-		return new Sphere(m, r);
+		Sphere sphere = new Sphere(m, r);
+
+		objects.add(sphere);
+
+		return sphere;
 	}
 
 	/**
@@ -53,6 +72,19 @@ public final class GeomFactory {
 	 * @return   The new triangle
 	 */
 	public static Triangle createTriangle(final Point a, final Point b, final Point c) {
-		return new Triangle(a, b, c);
+		Triangle triangle = new Triangle(a, b, c);
+
+		objects.add(triangle);
+
+		return triangle;
+	}
+
+	/**
+	 * Gets a list of all created objects.
+	 *
+	 * @return A list of all created objects.
+	 */
+	public static List<Primitive> getObjects() {
+		return objects;
 	}
 }

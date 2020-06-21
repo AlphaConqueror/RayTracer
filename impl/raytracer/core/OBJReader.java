@@ -1,11 +1,16 @@
 package raytracer.core;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
 
 import raytracer.core.def.Accelerator;
+import raytracer.core.def.StandardObj;
+import raytracer.geom.GeomFactory;
+import raytracer.geom.Primitive;
+import raytracer.math.Point;
 import raytracer.math.Vec3;
 
 /**
@@ -67,7 +72,71 @@ public class OBJReader {
 	public static void read(final InputStream in,
 			final Accelerator accelerator, final Shader shader, final float scale,
 			final Vec3 translate) throws FileNotFoundException {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+
+		if(in == null)
+			throw new IllegalArgumentException("Input stream is null.");
+		if(accelerator == null)
+			throw new IllegalArgumentException("Accelerator is null.");
+		if(shader == null)
+			throw new IllegalArgumentException("Shader is null.");
+		if(translate == null)
+			throw new IllegalArgumentException("Translate vector is null.");
+		if(!translate.isFinite())
+			throw new IllegalArgumentException("Translate vector is not finite.");
+		if(!Float.isFinite(scale))
+			throw new IllegalArgumentException("Scale is not finite.");
+		if(Float.isNaN(scale))
+			throw new IllegalArgumentException("Scale is NaN.");
+
+		Scanner scanner = new Scanner(in);
+		List<Point> points = new LinkedList<>();
+
+		scanner.useLocale(Locale.ENGLISH);
+
+		while(scanner.hasNext()) {
+			String line = scanner.nextLine();
+
+			if(line.length() < 7)
+				continue;
+			switch (line.charAt(0)) {
+				case '#':
+					continue;
+				case 'v': {
+					String[] split = line.substring(2).split(" ");
+
+					if (split.length != 3)
+						break;
+
+					points.add(new Point(Float.parseFloat(split[0]), Float.parseFloat(split[1]), Float.parseFloat(split[2])).add(translate));
+					break;
+				}
+				case 'f': {
+					String[] split = line.substring(2).split(" ");
+
+					if (split.length != 3)
+						break;
+
+					Primitive triangle = GeomFactory.createTriangle(points.get(Integer.parseInt(split[0]) - 1).scale(scale), points.get(Integer.parseInt(split[1]) - 1).scale(scale),
+							points.get(Integer.parseInt(split[2]) - 1).scale(scale));
+
+					accelerator.add(new StandardObj(triangle, shader));
+					break;
+				}
+				default:
+					break;
+			}
+		}
+
+		scanner.close();
 	}
 }
+
+
+
+
+
+
+
+
+
+
