@@ -73,11 +73,11 @@ public class Main {
 				f.setVisible(true);
 			}
 		});
-		final boolean implementedPlane        = false; // TODO implement Plane
-		final boolean implementedCheckerBoard = false; // TODO implement CheckerBoard
-		final boolean implementedSphere       = false; // TODO implement Sphere
-		final boolean implementedPhong        = false; // TODO implement Phong
-		final boolean implementedOBJReader    = false; // TODO implement OBJReader
+		final boolean implementedPlane        = true; // TODO implement Plane
+		final boolean implementedCheckerBoard = true; // TODO implement CheckerBoard
+		final boolean implementedSphere       = true; // TODO implement Sphere
+		final boolean implementedPhong        = true; // TODO implement Phong
+		final boolean implementedOBJReader    = true; // TODO implement OBJReader
 		final boolean implementedBVH          = false; // TODO implement BVH
 		final LightSource ls      = new PointLightSource(new Point(-10, 10, -10), Color.WHITE);
 		final Color       ambient = Color.WHITE.scale(0.05f);
