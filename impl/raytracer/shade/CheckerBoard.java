@@ -34,7 +34,8 @@ public class CheckerBoard implements Shader {
     @Override
     public Color shade(Hit hit, Trace trace) {
         Vec2 uv = hit.getUV();
-        int x = (int) (uv.x()/scale) + (int) (uv.y()/scale);
+
+        int x = (int) (Math.floor(uv.x()/scale) + Math.floor(uv.y()/scale));
 
         return x % 2 == 0 ? a.shade(hit, trace) : b.shade(hit, trace);
     }

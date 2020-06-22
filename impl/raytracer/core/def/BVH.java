@@ -1,10 +1,12 @@
 package raytracer.core.def;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import raytracer.core.Hit;
 import raytracer.core.Obj;
 import raytracer.geom.BBox;
+import raytracer.geom.Primitive;
 import raytracer.math.Pair;
 import raytracer.math.Point;
 import raytracer.math.Ray;
@@ -14,9 +16,10 @@ import raytracer.math.Vec3;
  * Represents a bounding volume hierarchy acceleration structure
  */
 public class BVH extends BVHBase {
+	private List<Obj> objects;
+
 	public BVH() {
-		// TODO: implement this
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		objects = new ArrayList<>();
 	}
 
 	@Override
@@ -33,8 +36,7 @@ public class BVH extends BVHBase {
 	 */
 	@Override
 	public void add(final Obj prim) {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		objects.add(prim);
 	}
 
 	/**
@@ -73,7 +75,6 @@ public class BVH extends BVHBase {
 
 	@Override
 	public List<Obj> getObjects() {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		return objects;
 	}
 }
