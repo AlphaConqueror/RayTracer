@@ -49,7 +49,7 @@ public class RaytracerPublicBVHTest extends RayTracerTestBase implements PublicT
 		final Obj object = createSomeObject(createSphere(new Point(1, 2, 3), 4));
 		final BBox box = object.bbox();
 		studentBvh.add(object);
-		assertTrue("BVH bbox not equal", box.equals(studentBvh.bbox()));
+		assertTrue("BVH bbox not equal. Right box = " + box.toString() + ", got " + studentBvh.bbox().toString() + ".", box.equals(studentBvh.bbox()));
 	}
 
 	@Test(timeout = DEFAULT_TIMEOUT)

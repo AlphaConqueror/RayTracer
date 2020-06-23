@@ -24,8 +24,17 @@ public class BVH extends BVHBase {
 
 	@Override
 	public BBox bbox() {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		Point max = null;
+
+		for(Obj obj : objects) {
+			Point bboxMax = obj.bbox().getMax();
+			if (max == null)
+				max = bboxMax;
+			else
+				max = max.max(bboxMax);
+		}
+
+		return BBox.create(calculateMinMax().a, max);
 	}
 
 	/**
@@ -44,14 +53,28 @@ public class BVH extends BVHBase {
 	 */
 	@Override
 	public void buildBVH() {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		//TODO: Implement
 	}
 
 	@Override
 	public Pair<Point, Point> calculateMinMax() {
-		// TODO Implement this method
-		throw new UnsupportedOperationException("This method has not yet been implemented.");
+		Point min = null, max = null;
+
+		for(Obj obj : objects) {
+			Point bboxMin = obj.bbox().getMin();
+
+			if(min == null)
+				min = bboxMin;
+			else
+				min = min.min(bboxMin);
+
+			if(max == null)
+				max = bboxMin;
+			else
+				max = max.max(bboxMin);
+		}
+
+		return new Pair<>(min, max);
 	}
 
 	@Override
@@ -61,8 +84,7 @@ public class BVH extends BVHBase {
 	}
 
 	@Override
-	public void distributeObjects(final BVHBase a, final BVHBase b,
-			final int splitdim, final float splitpos) {
+	public void distributeObjects(final BVHBase a, final BVHBase b, final int splitdim, final float splitpos) {
 		// TODO Implement this method
 		throw new UnsupportedOperationException("This method has not yet been implemented.");
 	}

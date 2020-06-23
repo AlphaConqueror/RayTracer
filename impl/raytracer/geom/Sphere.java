@@ -11,6 +11,7 @@ public class Sphere extends BBoxedPrimitive {
     private final float rad;
 
     public Sphere(Point m, float r) {
+        super(BBox.create(m.add(new Vec3(1, 1, 1).scale(r)), m.add(new Vec3(-1, -1 ,-1).scale(r))));
         this.m = m;
         this.rad = r;
     }
