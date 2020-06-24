@@ -8,6 +8,7 @@ import raytracer.core.def.StandardObj;
 import raytracer.geom.GeomFactory;
 import raytracer.geom.Primitive;
 import raytracer.math.Color;
+import raytracer.math.Point;
 import raytracer.math.Ray;
 import raytracer.math.Vec3;
 
@@ -55,6 +56,7 @@ public class Phong implements Shader {
     public Color shade(Hit hit, Trace trace) {
         Color dColor = Color.BLACK,
               sColor = Color.BLACK;
+        Point hitPoint = hit.getPoint();
 
         Color cSub = inner.shade(hit, trace);
         Vec3 n = hit.getNormal(),
@@ -62,21 +64,11 @@ public class Phong implements Shader {
 
         //Represents Sum lightSource element of L
         for(LightSource lightSource : trace.getScene().getLightSources()) {
-            boolean isHit = false;
-
-            //Tests if another object has been hit by the light ray.
-            for(Primitive obj : GeomFactory.getObjects()) {
-                if(obj.hit(new Ray(hit.getPoint(), lightSource.getLocation().sub(hit.getPoint()).normalized()),
-                        new StandardObj(obj, new SingleColor(Color.BLACK)), 0, hit.getParameter()).hits()) {
-                    isHit = true;
-                    break;
-                }
-            }
-
+            Hit shadowHit = trace.spawn(hitPoint, lightSource.getLocation().sub(hitPoint).normalized()).getHit();
             Color cL = lightSource.getColor();
-            Vec3 v = lightSource.getLocation().sub(hit.getPoint()).normalized();
+            Vec3 v = lightSource.getLocation().sub(hitPoint).normalized();
 
-            if(!isHit) {
+            if(!shadowHit.hits() || shadowHit.getParameter() > hit.getParameter()) {
                 dColor = dColor.add(cL.mul(cSub)).scale(diffuse * Math.max(0, n.dot(v)));
                 sColor = sColor.add(cL).scale((float) (specular * Math.pow(Math.max(0, r.dot(v)), shininess)));
             }

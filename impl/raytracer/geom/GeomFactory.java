@@ -8,9 +8,6 @@ import java.util.List;
 
 public final class GeomFactory {
 
-	//TODO: Edited
-	private static final List<Primitive> objects = new ArrayList<>();
-
 	private GeomFactory() {}
 
 	/**
@@ -25,11 +22,7 @@ public final class GeomFactory {
 	 * @return   The new plane
 	 */
 	public static Primitive createPlane(final Point a, final Point b, final Point c) {
-		Plane plane = new Plane(a, b, c);
-
-		objects.add(plane);
-
-		return plane;
+		return new Plane(a, b, c);
 	}
 
 	/**
@@ -41,11 +34,7 @@ public final class GeomFactory {
 	 * @return      The new plane
 	 */
 	public static Primitive createPlane(final Vec3 n, final Point supp) {
-		Plane plane = new Plane(n, supp);
-
-		objects.add(plane);
-
-		return plane;
+		return new Plane(n, supp);
 	}
 
 	/**
@@ -56,11 +45,7 @@ public final class GeomFactory {
 	 * @return   The new sphere
 	 */
 	public static Primitive createSphere(final Point m, final float r) {
-		Sphere sphere = new Sphere(m, r);
-
-		objects.add(sphere);
-
-		return sphere;
+		return new Sphere(m, r);
 	}
 
 	/**
@@ -72,19 +57,6 @@ public final class GeomFactory {
 	 * @return   The new triangle
 	 */
 	public static Triangle createTriangle(final Point a, final Point b, final Point c) {
-		Triangle triangle = new Triangle(a, b, c);
-
-		objects.add(triangle);
-
-		return triangle;
-	}
-
-	/**
-	 * Gets a list of all created objects.
-	 *
-	 * @return A list of all created objects.
-	 */
-	public static List<Primitive> getObjects() {
-		return objects;
+		return new Triangle(a, b, c);
 	}
 }
