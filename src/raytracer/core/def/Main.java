@@ -78,7 +78,7 @@ public class Main {
 		final boolean implementedSphere       = true; // TODO implement Sphere
 		final boolean implementedPhong        = true; // TODO implement Phong
 		final boolean implementedOBJReader    = true; // TODO implement OBJReader
-		final boolean implementedBVH          = false; // TODO implement BVH
+		final boolean implementedBVH          = true; // TODO implement BVH
 		final LightSource ls      = new PointLightSource(new Point(-10, 10, -10), Color.WHITE);
 		final Color       ambient = Color.WHITE.scale(0.05f);
 		final Camera      cam     = new PerspectiveCamera(new Point(0, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 3, 4, 3);
