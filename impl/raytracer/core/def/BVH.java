@@ -88,14 +88,22 @@ public class BVH extends BVHBase {
 		float vecLength = 0;
 		int index = 0;
 
+		String m = "";
+
 		for(int i = 0; i < objects.size(); i++) {
 			Obj object = objects.get(i);
+
+			m += "|" + object.bbox().getMax().sub(object.bbox().getMin());
 
 			if (object.bbox().getMax().sub(object.bbox().getMin()).mul(size).norm() > vecLength)
 				index = i;
 		}
 
-		return index;
+		String msg = objects.size() + "|" + index + "|" + vecLength + "|" + size.toString() + m;
+
+		throw new UnsupportedOperationException(msg);
+
+		//return index;
 	}
 
 	@Override
