@@ -36,6 +36,7 @@ public class BVH extends BVHBase {
 	@Override
 	public void add(final Obj prim) {
 		objects.add(prim);
+		buildBVH();
 	}
 
 	/**
@@ -96,14 +97,28 @@ public class BVH extends BVHBase {
 	@Override
 	public Hit hit(final Ray ray, final Obj obj, final float tmin, final float tmax) {
 		Hit hit = bbox.hit(ray, tmin, tmax);
+		//TODO: Fix termination problems
 
 		if(hit.hits()) {
-			BBox a = BBox.EMPTY,
-				 b = BBox.EMPTY;
+			if(objects.size() == 1)
+				return objects.get(0).hit(ray, obj, tmin, tmax);
 
-			//distributeObjects(a, b, calculateSplitDimension());
+			BVH a = new BVH(),
+				b = new BVH();
+			Pair<Point, Point> minMax = calculateMinMax();
+			int dimension = calculateSplitDimension(minMax.b.sub(minMax.a));
+
+			distributeObjects(a, b, dimension, minMax.a.add(minMax.b.sub(minMax.a).scale(0.5f)).get(dimension));
+
+			Hit aHit = a.hit(ray, obj, tmin, tmax);
+
+			if(aHit.hits())
+				return aHit;
+			else
+				return b.hit(ray, obj, tmin, tmax);
 		}
 
+		System.out.println(ray.toString());
 		return hit;
 	}
 

@@ -71,7 +71,7 @@ public class OBJReader {
 	 */
 	public static void read(final InputStream in,
 			final Accelerator accelerator, final Shader shader, final float scale,
-			final Vec3 translate) throws FileNotFoundException {
+			final Vec3 translate) {
 
 		if(in == null)
 			throw new IllegalArgumentException("Input stream is null.");
