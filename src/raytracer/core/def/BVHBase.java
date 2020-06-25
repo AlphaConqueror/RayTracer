@@ -58,6 +58,5 @@ public abstract class BVHBase extends Accelerator {
 	 * @param splitpos
 	 *            The position used for splitting
 	 */
-	public abstract void distributeObjects(BVHBase a, BVHBase b,
-			int splitdim, float splitpos);
+	public abstract void distributeObjects(BVHBase a, BVHBase b, int splitdim, float splitpos);
 }

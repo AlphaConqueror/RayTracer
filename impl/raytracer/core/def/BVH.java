@@ -85,30 +85,14 @@ public class BVH extends BVHBase {
 
 	@Override
 	public int calculateSplitDimension(final Vec3 size) {
-		float vecLength = 0;
-		int index = 0;
+		float max = Math.max(size.x(), Math.max(size.y(), size.z()));
 
-		String m = "";
-
-		for(int i = 0; i < objects.size(); i++) {
-			Obj object = objects.get(i);
-
-			m += "|" + object.bbox().getMax().sub(object.bbox().getMin());
-
-			if (object.bbox().getMax().sub(object.bbox().getMin()).mul(size).norm() > vecLength)
-				index = i;
-		}
-
-		String msg = objects.size() + "|" + index + "|" + vecLength + "|" + size.toString() + m;
-
-		throw new UnsupportedOperationException(msg);
-
-		//return index;
+		return max == size.x() ? 0 : max == size.y() ? 1 : 2;
 	}
 
 	@Override
 	public void distributeObjects(final BVHBase a, final BVHBase b, final int splitdim, final float splitpos) {
-		throw new UnsupportedOperationException("Not implemented yet.");
+
 	}
 
 	@Override
