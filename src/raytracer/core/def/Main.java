@@ -82,7 +82,7 @@ public class Main {
 		final LightSource ls      = new PointLightSource(new Point(-10, 10, -10), Color.WHITE);
 		final Color       ambient = Color.WHITE.scale(0.05f);
 		//new PerspectiveCamera(new Point(0, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 3, 4, 3);
-		final Camera      cam     = new PerspectiveCamera(new Point(-80, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 1, 4, 3);
+		final Camera      cam     = new PerspectiveCamera(new Point(0, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 3, 4, 3);
 		final Accelerator accel   = new SimpleAccelerator();
 
 		{

@@ -3,6 +3,7 @@ package raytracer.core.def;
 import raytracer.core.Hit;
 import raytracer.core.Obj;
 import raytracer.geom.BBox;
+import raytracer.geom.GeomFactory;
 import raytracer.math.Pair;
 import raytracer.math.Point;
 import raytracer.math.Ray;
@@ -15,8 +16,9 @@ import java.util.List;
  * Represents a bounding volume hierarchy acceleration structure
  */
 public class BVH extends BVHBase {
-	private List<Obj> objects;
+	private final List<Obj> objects;
 	private BBox bbox = null;
+	private BVH a, b;
 
 	public BVH() {
 		objects = new ArrayList<>();
@@ -36,7 +38,6 @@ public class BVH extends BVHBase {
 	@Override
 	public void add(final Obj prim) {
 		objects.add(prim);
-		buildBVH();
 	}
 
 	/**
@@ -44,10 +45,12 @@ public class BVH extends BVHBase {
 	 */
 	@Override
 	public void buildBVH() {
+		//TODO: Prebuild everything
 		Point max = null;
 
 		for(Obj obj : objects) {
 			Point bboxMax = obj.bbox().getMax();
+
 			if (max == null)
 				max = bboxMax;
 			else
@@ -55,6 +58,24 @@ public class BVH extends BVHBase {
 		}
 
 		bbox =  BBox.create(calculateMinMax().a, max);
+
+		if(objects.size() > 4) {
+			a = new BVH();
+			b = new BVH();
+
+			Pair<Point, Point> minMax = calculateMinMax();
+			int dimension = calculateSplitDimension(minMax.b.sub(minMax.a));
+
+			distributeObjects(a, b, dimension, minMax.a.add(minMax.b.sub(minMax.a).scale(0.5f)).get(dimension));
+
+			if (a.getObjects().size() == objects.size() || b.getObjects().size() == objects.size()) {
+				a = null;
+				b = null;
+			} else {
+				a.buildBVH();
+				b.buildBVH();
+			}
+		}
 	}
 
 	@Override
@@ -87,38 +108,39 @@ public class BVH extends BVHBase {
 
 	@Override
 	public void distributeObjects(final BVHBase a, final BVHBase b, final int splitdim, final float splitpos) {
-		for(Obj object : objects)
-			if(object.bbox().getMin().get(splitdim) >= splitpos)
-				a.add(object);
+		for(Obj object : objects) {
+			if(object.bbox() == null)
+				throw new UnsupportedOperationException("Bounding box of object " + object.toString() + " is null.");
+			if (object.bbox().getMin().get(splitdim) >= splitpos)
+				a.getObjects().add(object);
 			else
-				b.add(object);
+				b.getObjects().add(object);
+		}
 	}
 
 	@Override
 	public Hit hit(final Ray ray, final Obj obj, final float tmin, final float tmax) {
 		Hit hit = bbox.hit(ray, tmin, tmax);
-		//TODO: Fix termination problems
 
 		if(hit.hits()) {
-			if(objects.size() == 1)
-				return objects.get(0).hit(ray, obj, tmin, tmax);
+			System.out.println(objects.size());
+			if(objects.size() <= 4) {
+				for(Obj object : objects) {
+					Hit objectHit = object.hit(ray, obj, tmin, tmax);
 
-			BVH a = new BVH(),
-				b = new BVH();
-			Pair<Point, Point> minMax = calculateMinMax();
-			int dimension = calculateSplitDimension(minMax.b.sub(minMax.a));
+					if(objectHit.hits())
+						return objectHit;
+				}
+			} else {
+				Hit aHit = a.hit(ray, obj, tmin, tmax);
 
-			distributeObjects(a, b, dimension, minMax.a.add(minMax.b.sub(minMax.a).scale(0.5f)).get(dimension));
+				if (aHit.hits())
+					return aHit;
 
-			Hit aHit = a.hit(ray, obj, tmin, tmax);
-
-			if(aHit.hits())
-				return aHit;
-			else
 				return b.hit(ray, obj, tmin, tmax);
+			}
 		}
 
-		System.out.println(ray.toString());
 		return hit;
 	}
 
