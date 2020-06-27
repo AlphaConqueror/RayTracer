@@ -38,14 +38,10 @@ public class BVH extends BVHBase {
 	@Override
 	public void add(final Obj prim) {
 		objects.add(prim);
+		buildBBox();
 	}
 
-	/**
-	 * Builds the actual bounding volume hierarchy
-	 */
-	@Override
-	public void buildBVH() {
-		//TODO: Prebuild everything
+	public void buildBBox() {
 		Point max = null;
 
 		for(Obj obj : objects) {
@@ -58,6 +54,14 @@ public class BVH extends BVHBase {
 		}
 
 		bbox =  BBox.create(calculateMinMax().a, max);
+	}
+
+	/**
+	 * Builds the actual bounding volume hierarchy
+	 */
+	@Override
+	public void buildBVH() {
+		buildBBox();
 
 		if(objects.size() > 4) {
 			a = new BVH();
@@ -112,9 +116,9 @@ public class BVH extends BVHBase {
 			if(object.bbox() == null)
 				throw new UnsupportedOperationException("Bounding box of object " + object.toString() + " is null.");
 			if (object.bbox().getMin().get(splitdim) >= splitpos)
-				a.getObjects().add(object);
+				a.add(object);
 			else
-				b.getObjects().add(object);
+				b.add(object);
 		}
 	}
 
@@ -123,7 +127,6 @@ public class BVH extends BVHBase {
 		Hit hit = bbox.hit(ray, tmin, tmax);
 
 		if(hit.hits()) {
-			System.out.println(objects.size());
 			if(objects.size() <= 4) {
 				for(Obj object : objects) {
 					Hit objectHit = object.hit(ray, obj, tmin, tmax);

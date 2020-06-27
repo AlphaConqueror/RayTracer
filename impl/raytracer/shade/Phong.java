@@ -62,7 +62,6 @@ public class Phong implements Shader {
         Vec3 n = hit.getNormal(),
              r = trace.getRay().dir().reflect(n).normalized();
 
-        //Represents Sum lightSource element of L
         for(LightSource lightSource : trace.getScene().getLightSources()) {
             Hit shadowHit = trace.spawn(hitPoint, lightSource.getLocation().sub(hitPoint).normalized()).getHit();
             Color cL = lightSource.getColor();
