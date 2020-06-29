@@ -4,10 +4,7 @@ import raytracer.core.Hit;
 import raytracer.core.Obj;
 import raytracer.geom.BBox;
 import raytracer.geom.GeomFactory;
-import raytracer.math.Pair;
-import raytracer.math.Point;
-import raytracer.math.Ray;
-import raytracer.math.Vec3;
+import raytracer.math.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +16,7 @@ public class BVH extends BVHBase {
 	private final List<Obj> objects;
 	private BBox bbox = null;
 	private BVH a, b;
+	private boolean builtChildren = false;
 
 	public BVH() {
 		objects = new ArrayList<>();
@@ -61,8 +59,6 @@ public class BVH extends BVHBase {
 	 */
 	@Override
 	public void buildBVH() {
-		buildBBox();
-
 		if(objects.size() > 4) {
 			a = new BVH();
 			b = new BVH();
@@ -71,6 +67,7 @@ public class BVH extends BVHBase {
 			int dimension = calculateSplitDimension(minMax.b.sub(minMax.a));
 
 			distributeObjects(a, b, dimension, minMax.a.add(minMax.b.sub(minMax.a).scale(0.5f)).get(dimension));
+			builtChildren = true;
 
 			if (a.getObjects().size() == objects.size() || b.getObjects().size() == objects.size()) {
 				a = null;
@@ -113,9 +110,7 @@ public class BVH extends BVHBase {
 	@Override
 	public void distributeObjects(final BVHBase a, final BVHBase b, final int splitdim, final float splitpos) {
 		for(Obj object : objects) {
-			if(object.bbox() == null)
-				throw new UnsupportedOperationException("Bounding box of object " + object.toString() + " is null.");
-			if (object.bbox().getMin().get(splitdim) >= splitpos)
+			if (object.bbox().getMin().get(splitdim) < splitpos)
 				a.add(object);
 			else
 				b.add(object);
@@ -126,6 +121,11 @@ public class BVH extends BVHBase {
 	public Hit hit(final Ray ray, final Obj obj, final float tmin, final float tmax) {
 		Hit hit = bbox.hit(ray, tmin, tmax);
 
+		if(!builtChildren) {
+			System.out.println("building bvh");
+			buildBVH();
+		}
+
 		if(hit.hits()) {
 			if(objects.size() <= 4) {
 				for(Obj object : objects) {
@@ -135,16 +135,51 @@ public class BVH extends BVHBase {
 						return objectHit;
 				}
 			} else {
-				Hit aHit = a.hit(ray, obj, tmin, tmax);
+				if (a != null && b != null) {
+					Hit aHit = a.hit(ray, obj, tmin, tmax);
 
-				if (aHit.hits())
-					return aHit;
+					if (aHit.hits())
+						return aHit;
 
-				return b.hit(ray, obj, tmin, tmax);
+					return b.hit(ray, obj, tmin, tmax);
+				} else if(a == null && b != null)
+					return b.hit(ray, obj, tmin, tmax);
+				else if(b == null && a != null)
+					return a.hit(ray, obj, tmin, tmax);
 			}
 		}
 
-		return hit;
+		return new Hit() {
+			@Override
+			public boolean hits() {
+				return false;
+			}
+
+			@Override
+			public float getParameter() {
+				return 0;
+			}
+
+			@Override
+			public Point getPoint() {
+				return null;
+			}
+
+			@Override
+			public Vec3 getNormal() {
+				return null;
+			}
+
+			@Override
+			public Vec2 getUV() {
+				return null;
+			}
+
+			@Override
+			public Obj get() {
+				return null;
+			}
+		};
 	}
 
 	@Override

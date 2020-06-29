@@ -7,10 +7,7 @@ import raytracer.core.Trace;
 import raytracer.core.def.StandardObj;
 import raytracer.geom.GeomFactory;
 import raytracer.geom.Primitive;
-import raytracer.math.Color;
-import raytracer.math.Point;
-import raytracer.math.Ray;
-import raytracer.math.Vec3;
+import raytracer.math.*;
 
 public class Phong implements Shader {
 
@@ -63,13 +60,13 @@ public class Phong implements Shader {
              r = trace.getRay().dir().reflect(n).normalized();
 
         for(LightSource lightSource : trace.getScene().getLightSources()) {
-            Hit shadowHit = trace.spawn(hitPoint, lightSource.getLocation().sub(hitPoint).normalized()).getHit();
             Color cL = lightSource.getColor();
             Vec3 v = lightSource.getLocation().sub(hitPoint).normalized();
+            Hit shadowHit = trace.spawn(hitPoint, v).getHit();
 
-            if(!shadowHit.hits() || shadowHit.getParameter() > hit.getParameter()) {
-                dColor = dColor.add(cL.mul(cSub)).scale(diffuse * Math.max(0, n.dot(v)));
-                sColor = sColor.add(cL).scale((float) (specular * Math.pow(Math.max(0, r.dot(v)), shininess)));
+            if(!shadowHit.hits() || shadowHit.getParameter() < -1 * Constants.EPS || shadowHit.getParameter() > lightSource.getLocation().sub(hitPoint).norm()) {
+                dColor = dColor.add(cL.mul(cSub).scale(diffuse * Math.max(0, n.dot(v))));
+                sColor = sColor.add(cL.scale((float) (specular * Math.pow(Math.max(0, r.dot(v)), shininess))));
             }
         }
 

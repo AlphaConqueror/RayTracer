@@ -11,7 +11,7 @@ public class Sphere extends BBoxedPrimitive {
     private final float rad;
 
     public Sphere(Point m, float r) {
-        super(BBox.create(m.add(new Vec3(1, 1, 1).scale(r)), m.add(new Vec3(-1, -1 ,-1).scale(r))));
+        super(BBox.create(m.add(new Vec3(r, r ,r)), m.sub(new Vec3(r, r ,r))));
         this.m = m;
         this.rad = r;
     }
@@ -20,29 +20,20 @@ public class Sphere extends BBoxedPrimitive {
     public Hit hitTest(Ray ray, Obj object, float tmin, float tmax) {
         return new LazyHitTest(object) {
             private Point point;
-            private float r = 0;
+            private float r;
 
             @Override
             protected boolean calculateHit() {
-                Vec3 dir = ray.dir();
+                Vec3 dir = ray.dir(),
+                     mBase = ray.base().sub(m);
 
-                float b = 2 * dir.dot(ray.base().sub(m));
-                float c = (float) (ray.base().sub(m).dot(ray.base().sub(m)) - Math.pow(rad, 2));
+                float b = 2 * dir.dot(mBase);
+                float c = mBase.dot(mBase) - (float) Math.pow(rad, 2);
 
                 if(Math.pow(b, 2) - 4 * c < 0)
                     return false;
 
-                float sqrt = (float) Math.sqrt(Math.pow(b, 2) - 4 * c);
-                float lPos = (-1 * b + sqrt)/2,
-                      lNeg = (-1 * b - sqrt)/2;
-
-                if(Math.max(lPos, lNeg) < -1 * Constants.EPS)
-                    return true;
-
-                if(tmin <= lPos && lPos <= tmax)
-                    r = lPos;
-                if(lNeg < lPos && tmin <= lPos && lPos <= tmax)
-                    r = lNeg;
+                r = (-1 * b - (float) Math.sqrt(Math.pow(b, 2) - 4 * c))/2;
 
                 return r >= Constants.EPS;
             }
@@ -62,7 +53,7 @@ public class Sphere extends BBoxedPrimitive {
 
             @Override
             public Vec3 getNormal() {
-                return ray.base().sub(m).normalized();
+                return getPoint().sub(m).normalized();
             }
 
             @Override
@@ -74,8 +65,7 @@ public class Sphere extends BBoxedPrimitive {
 
     @Override
     public int hashCode() {
-        //TODO: Check
-        return m.hashCode();
+        return m.hashCode() ^ (int) rad;
     }
 
     @Override

@@ -125,6 +125,7 @@ public class Main {
 				final String filename;
 				final float  scale;
 				if (implementedBVH) {
+					System.out.println("Bunny");
 					filename = "obj/bunny.obj";
 					scale    = 25;
 				} else {
