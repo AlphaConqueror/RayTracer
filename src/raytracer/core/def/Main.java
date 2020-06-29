@@ -16,18 +16,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import raytracer.core.Camera;
-import raytracer.core.LightSource;
-import raytracer.core.OBJReader;
-import raytracer.core.Obj;
-import raytracer.core.PerspectiveCamera;
-import raytracer.core.Renderer;
-import raytracer.core.Scene;
-import raytracer.core.Shader;
+import raytracer.core.*;
 import raytracer.geom.GeomFactory;
 import raytracer.geom.Primitive;
 import raytracer.math.Color;
 import raytracer.math.Point;
+import raytracer.math.Ray;
 import raytracer.math.Vec3;
 import raytracer.shade.ShaderFactory;
 import raytracer.shade.SingleColor;
@@ -129,6 +123,7 @@ public class Main {
 					filename = "obj/bunny.obj";
 					scale    = 25;
 				} else {
+					System.out.println("Pyramid");
 					filename = "obj/pyramid.obj";
 					scale    = 1;
 				}

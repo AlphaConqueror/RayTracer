@@ -107,7 +107,7 @@ public class OBJReader {
 					if (split.length != 3)
 						break;
 
-					points.add(new Point(Float.parseFloat(split[0]), Float.parseFloat(split[1]), Float.parseFloat(split[2])).add(translate));
+					points.add(new Point(Float.parseFloat(split[0]), Float.parseFloat(split[1]), Float.parseFloat(split[2])).scale(scale).add(translate));
 					break;
 				}
 				case 'f': {
@@ -116,8 +116,8 @@ public class OBJReader {
 					if (split.length != 3)
 						break;
 
-					Primitive triangle = GeomFactory.createTriangle(points.get(Integer.parseInt(split[0]) - 1).scale(scale), points.get(Integer.parseInt(split[1]) - 1).scale(scale),
-							points.get(Integer.parseInt(split[2]) - 1).scale(scale));
+					Primitive triangle = GeomFactory.createTriangle(points.get(Integer.parseInt(split[0]) - 1), points.get(Integer.parseInt(split[1]) - 1),
+							points.get(Integer.parseInt(split[2]) - 1));
 
 					accelerator.add(new StandardObj(triangle, shader));
 					break;

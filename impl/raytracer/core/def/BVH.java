@@ -3,7 +3,7 @@ package raytracer.core.def;
 import raytracer.core.Hit;
 import raytracer.core.Obj;
 import raytracer.geom.BBox;
-import raytracer.geom.GeomFactory;
+import raytracer.geom.Primitive;
 import raytracer.math.*;
 
 import java.util.ArrayList;
@@ -13,13 +13,12 @@ import java.util.List;
  * Represents a bounding volume hierarchy acceleration structure
  */
 public class BVH extends BVHBase {
-	private final List<Obj> objects;
+	private final List<Obj> objects, nodes;
 	private BBox bbox = null;
-	private BVH a, b;
-	private boolean builtChildren = false;
 
 	public BVH() {
 		objects = new ArrayList<>();
+		nodes = new ArrayList<>();
 	}
 
 	@Override
@@ -60,22 +59,26 @@ public class BVH extends BVHBase {
 	@Override
 	public void buildBVH() {
 		if(objects.size() > 4) {
-			a = new BVH();
-			b = new BVH();
+			BVH a = new BVH(),
+				b = new BVH();
 
 			Pair<Point, Point> minMax = calculateMinMax();
 			int dimension = calculateSplitDimension(minMax.b.sub(minMax.a));
 
 			distributeObjects(a, b, dimension, minMax.a.add(minMax.b.sub(minMax.a).scale(0.5f)).get(dimension));
-			builtChildren = true;
 
-			if (a.getObjects().size() == objects.size() || b.getObjects().size() == objects.size()) {
-				a = null;
-				b = null;
-			} else {
+			if (a.getObjects().size() != objects.size() && b.getObjects().size() != objects.size()) {
+				nodes.add(a);
+				nodes.add(b);
+
 				a.buildBVH();
 				b.buildBVH();
-			}
+			} else
+				for(Obj object : objects)
+					nodes.add(object);
+		} else {
+			for(Obj object : objects)
+				nodes.add(object);
 		}
 	}
 
@@ -119,67 +122,23 @@ public class BVH extends BVHBase {
 
 	@Override
 	public Hit hit(final Ray ray, final Obj obj, final float tmin, final float tmax) {
-		Hit hit = bbox.hit(ray, tmin, tmax);
+		Hit hit = null;
 
-		if(!builtChildren) {
-			System.out.println("building bvh");
-			buildBVH();
-		}
+		if(bbox.hit(ray, tmin, tmax).hits()) {
+			for(Obj node : nodes) {
+				Hit nodeHit = node.hit(ray, node, tmin, tmax);
 
-		if(hit.hits()) {
-			if(objects.size() <= 4) {
-				for(Obj object : objects) {
-					Hit objectHit = object.hit(ray, obj, tmin, tmax);
-
-					if(objectHit.hits())
-						return objectHit;
+				if(nodeHit.hits()) {
+					if(hit == null || nodeHit.getParameter() < hit.getParameter())
+						hit = nodeHit;
 				}
-			} else {
-				if (a != null && b != null) {
-					Hit aHit = a.hit(ray, obj, tmin, tmax);
-
-					if (aHit.hits())
-						return aHit;
-
-					return b.hit(ray, obj, tmin, tmax);
-				} else if(a == null && b != null)
-					return b.hit(ray, obj, tmin, tmax);
-				else if(b == null && a != null)
-					return a.hit(ray, obj, tmin, tmax);
 			}
 		}
 
-		return new Hit() {
-			@Override
-			public boolean hits() {
-				return false;
-			}
+		if(hit != null)
+			return hit;
 
-			@Override
-			public float getParameter() {
-				return 0;
-			}
-
-			@Override
-			public Point getPoint() {
-				return null;
-			}
-
-			@Override
-			public Vec3 getNormal() {
-				return null;
-			}
-
-			@Override
-			public Vec2 getUV() {
-				return null;
-			}
-
-			@Override
-			public Obj get() {
-				return null;
-			}
-		};
+		return Hit.No.get();
 	}
 
 	@Override
