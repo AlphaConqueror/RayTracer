@@ -75,7 +75,6 @@ public class Main {
 		final boolean implementedBVH          = true; // TODO implement BVH
 		final LightSource ls      = new PointLightSource(new Point(-10, 10, -10), Color.WHITE);
 		final Color       ambient = Color.WHITE.scale(0.05f);
-		//new PerspectiveCamera(new Point(0, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 3, 4, 3);
 		final Camera      cam     = new PerspectiveCamera(new Point(0, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 3, 4, 3);
 		final Accelerator accel   = new SimpleAccelerator();
 
@@ -119,11 +118,9 @@ public class Main {
 				final String filename;
 				final float  scale;
 				if (implementedBVH) {
-					System.out.println("Bunny");
 					filename = "obj/bunny.obj";
 					scale    = 25;
 				} else {
-					System.out.println("Pyramid");
 					filename = "obj/pyramid.obj";
 					scale    = 1;
 				}

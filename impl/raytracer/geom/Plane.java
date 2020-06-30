@@ -68,7 +68,6 @@ public class Plane extends BBoxedPrimitive {
 
     @Override
     public int hashCode() {
-        //TODO: Check
         return m.hashCode() ^ n.hashCode();
     }
 
