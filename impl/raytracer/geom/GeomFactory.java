@@ -3,9 +3,6 @@ package raytracer.geom;
 import raytracer.math.Point;
 import raytracer.math.Vec3;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class GeomFactory {
 
 	private GeomFactory() {}

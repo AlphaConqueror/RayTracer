@@ -1,17 +1,20 @@
 package raytracer.core;
 
-import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
-
 import raytracer.core.def.Accelerator;
 import raytracer.core.def.StandardObj;
 import raytracer.geom.GeomFactory;
 import raytracer.geom.Primitive;
 import raytracer.math.Point;
 import raytracer.math.Vec3;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
 
 /**
  * Represents a model file reader for the OBJ format

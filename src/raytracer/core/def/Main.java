@@ -78,6 +78,8 @@ public class Main {
 		final Camera      cam     = new PerspectiveCamera(new Point(0, 4, -10), Point.ORIGIN, new Vec3(0, 5, 0), 3, 4, 3);
 		final Accelerator accel   = new SimpleAccelerator();
 
+		Long currentTimeMillis = System.currentTimeMillis();
+
 		{
 			final Primitive tri      = GeomFactory.createTriangle(new Point(-3, .5f, -1.5f), new Point(-1, 2.5f, -1.5f), new Point(1, .5f, -1.5f));
 			final Shader    yellow   = new SingleColor(Color.YELLOW);
@@ -170,7 +172,7 @@ public class Main {
 		}
 
 		panel.repaint();
-		System.out.println("done");
+		System.out.println("done --> after " + (System.currentTimeMillis() - currentTimeMillis));
 	}
 
 }

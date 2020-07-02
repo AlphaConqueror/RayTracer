@@ -3,8 +3,10 @@ package raytracer.core.def;
 import raytracer.core.Hit;
 import raytracer.core.Obj;
 import raytracer.geom.BBox;
-import raytracer.geom.Primitive;
-import raytracer.math.*;
+import raytracer.math.Pair;
+import raytracer.math.Point;
+import raytracer.math.Ray;
+import raytracer.math.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
  */
 public class BVH extends BVHBase {
 	private final List<Obj> objects, nodes;
-	private BBox bbox = null;
+	private BBox bbox = BBox.EMPTY;
 
 	public BVH() {
 		objects = new ArrayList<>();
@@ -35,22 +37,7 @@ public class BVH extends BVHBase {
 	@Override
 	public void add(final Obj prim) {
 		objects.add(prim);
-		buildBBox();
-	}
-
-	public void buildBBox() {
-		Point max = null;
-
-		for(Obj obj : objects) {
-			Point bboxMax = obj.bbox().getMax();
-
-			if (max == null)
-				max = bboxMax;
-			else
-				max = max.max(bboxMax);
-		}
-
-		bbox =  BBox.create(calculateMinMax().a, max);
+		bbox = BBox.surround(bbox, prim.bbox());
 	}
 
 	/**
@@ -58,7 +45,7 @@ public class BVH extends BVHBase {
 	 */
 	@Override
 	public void buildBVH() {
-		if(objects.size() > 4) {
+		if(objects.size() > BVH.THRESHOLD) {
 			BVH a = new BVH(),
 				b = new BVH();
 

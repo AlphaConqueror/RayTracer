@@ -4,10 +4,10 @@ import raytracer.core.Hit;
 import raytracer.core.LightSource;
 import raytracer.core.Shader;
 import raytracer.core.Trace;
-import raytracer.core.def.StandardObj;
-import raytracer.geom.GeomFactory;
-import raytracer.geom.Primitive;
-import raytracer.math.*;
+import raytracer.math.Color;
+import raytracer.math.Constants;
+import raytracer.math.Point;
+import raytracer.math.Vec3;
 
 public class Phong implements Shader {
 
